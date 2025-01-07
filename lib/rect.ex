@@ -6,6 +6,9 @@ defmodule FriGame.Rect do
   @type rect_pos_x() :: :left | :right | :centerx
   @type rect_pos_y() :: :top | :bottom | :centery
 
+  @type rect_size_x() :: :width | :half_width | :radius
+  @type rect_size_y() :: :height | :half_height | :radius
+
   typedstruct do
     field(:left, number(), default: 0)
     field(:top, number(), default: 0)
