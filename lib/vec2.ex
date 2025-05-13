@@ -192,6 +192,26 @@ defmodule FriGame.Vec2 do
     }
   end
 
+  def project(%__MODULE__{} = a, %__MODULE__{} = b) do
+    bx = b.x
+    by = b.y
+
+    dot_ab = a.x * bx + a.y * by
+
+    squared_mag_b =
+      case bx * bx + by * by do
+        squared_mag_b when squared_mag_b == 0 -> squared_mag_b
+        squared_mag_b -> 1.0 / squared_mag_b
+      end
+
+    scalar = dot_ab * squared_mag_b
+
+    %__MODULE__{
+      x: bx * scalar,
+      y: by * scalar
+    }
+  end
+
   def abs(%__MODULE__{} = a) do
     %__MODULE__{
       x: Kernel.abs(a.x),
