@@ -39,76 +39,79 @@ defmodule FriGame.Vec2 do
     }
   end
 
-  def add(%__MODULE__{} = a, %__MODULE__{} = b) do
+  def add(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
     %__MODULE__{
-      x: a.x + b.x,
-      y: a.y + b.y
+      x: ax + bx,
+      y: ay + by
     }
   end
 
-  def sub(%__MODULE__{} = a, %__MODULE__{} = b) do
+  def sub(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
     %__MODULE__{
-      x: a.x - b.x,
-      y: a.y - b.y
+      x: ax - bx,
+      y: ay - by
     }
   end
 
-  def scale(%__MODULE__{} = a, scalar) when is_number(scalar) do
+  def scale(%{x: ax, y: ay}, scalar) when is_number(ax) and is_number(ay) and is_number(scalar) do
     %__MODULE__{
-      x: a.x * scalar,
-      y: a.y * scalar
+      x: ax * scalar,
+      y: ay * scalar
     }
   end
 
-  def scale(%__MODULE__{} = a, sx, sy) when is_number(sx) and is_number(sy) do
+  def scale(%{x: ax, y: ay}, sx, sy)
+      when is_number(ax) and is_number(ay) and is_number(sx) and is_number(sy) do
     %__MODULE__{
-      x: a.x * sx,
-      y: a.y * sy
+      x: ax * sx,
+      y: ay * sy
     }
   end
 
-  def invert(%__MODULE__{} = a) do
+  def invert(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
     %__MODULE__{
-      x: -a.x,
-      y: -a.y
+      x: -ax,
+      y: -ay
     }
   end
 
-  def normalize(%__MODULE__{} = a) do
+  def normalize(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
     mag =
-      case :math.sqrt(a.x * a.x + a.y * a.y) do
+      case :math.sqrt(ax * ax + ay * ay) do
         mag when mag == 0 -> mag
         mag -> 1.0 / mag
       end
 
     %__MODULE__{
-      x: a.x * mag,
-      y: a.y * mag
+      x: ax * mag,
+      y: ay * mag
     }
   end
 
-  def rotate(%__MODULE__{} = a, angle) when is_number(angle) do
-    x = a.x
-    y = a.y
+  def rotate(%{x: ax, y: ay}, angle) when is_number(ax) and is_number(ay) and is_number(angle) do
     ct = :math.cos(angle)
     st = :math.sin(angle)
 
     %__MODULE__{
-      x: x * ct - y * st,
-      y: x * st + y * ct
+      x: ax * ct - ay * st,
+      y: ax * st + ay * ct
     }
   end
 
-  def rotate_around_point(%__MODULE__{} = a, %__MODULE__{} = axis_point, angle)
-      when is_number(angle) do
+  def rotate_around_point(%{x: ax, y: ay} = a, %{x: apx, y: apy} = axis_point, angle)
+      when is_number(ax) and is_number(ay) and is_number(apx) and is_number(apy) and
+             is_number(angle) do
     a
     |> sub(axis_point)
     |> rotate(angle)
     |> add(axis_point)
   end
 
-  def scale_and_rotate(%__MODULE__{} = a, %__MODULE__{} = axis_point, angle, scalar)
-      when is_number(angle) and is_number(scalar) do
+  def scale_and_rotate(%{x: ax, y: ay} = a, %{x: apx, y: apy} = axis_point, angle, scalar)
+      when is_number(ax) and is_number(ay) and is_number(apx) and is_number(apy) and
+             is_number(angle) and is_number(scalar) do
     a
     |> sub(axis_point)
     |> scale(scalar)
@@ -116,8 +119,9 @@ defmodule FriGame.Vec2 do
     |> add(axis_point)
   end
 
-  def scale_and_rotate(%__MODULE__{} = a, %__MODULE__{} = axis_point, angle, sx, sy)
-      when is_number(angle) and is_number(sx) and is_number(sy) do
+  def scale_and_rotate(%{x: ax, y: ay} = a, %{x: apx, y: apy} = axis_point, angle, sx, sy)
+      when is_number(ax) and is_number(ay) and is_number(apx) and is_number(apy) and
+             is_number(angle) and is_number(sx) and is_number(sy) do
     a
     |> sub(axis_point)
     |> scale(sx, sy)
@@ -125,60 +129,63 @@ defmodule FriGame.Vec2 do
     |> add(axis_point)
   end
 
-  def lerp(%__MODULE__{} = a, %__MODULE__{} = b, t) when is_number(t) do
-    ax = a.x
-    ay = a.y
-
+  def lerp(%{x: ax, y: ay}, %{x: bx, y: by}, t)
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) and is_number(t) do
     %__MODULE__{
-      x: ax + t * (b.x - ax),
-      y: ay + t * (b.y - ay)
+      x: ax + t * (bx - ax),
+      y: ay + t * (by - ay)
     }
   end
 
-  def perp(%__MODULE__{} = a) do
+  def perp(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
     %__MODULE__{
-      x: -a.y,
-      y: a.x
+      x: -ay,
+      y: ax
     }
   end
 
-  def magnitude(%__MODULE__{} = a) do
-    :math.sqrt(a.x * a.x + a.y * a.y)
+  def magnitude(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
+    :math.sqrt(ax * ax + ay * ay)
   end
 
-  def squared_magnitude(%__MODULE__{} = a) do
-    a.x * a.x + a.y * a.y
+  def squared_magnitude(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
+    ax * ax + ay * ay
   end
 
-  def azimuth(%__MODULE__{} = a) do
-    :math.atan2(a.y, a.x)
+  def azimuth(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
+    :math.atan2(ay, ax)
   end
 
-  def dot(%__MODULE__{} = a, %__MODULE__{} = b) do
-    a.x * b.x + a.y * b.y
+  def dot(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
+    ax * bx + ay * by
   end
 
-  def cross(%__MODULE__{} = a, %__MODULE__{} = b) do
-    a.x * b.y - a.y * b.x
+  def cross(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
+    ax * by - ay * bx
   end
 
-  def distance(%__MODULE__{} = a, %__MODULE__{} = b) do
-    dx = a.x - b.x
-    dy = a.y - b.y
+  def distance(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
+    dx = ax - bx
+    dy = ay - by
 
     :math.sqrt(dx * dx + dy * dy)
   end
 
-  def squared_distance(%__MODULE__{} = a, %__MODULE__{} = b) do
-    dx = a.x - b.x
-    dy = a.y - b.y
+  def squared_distance(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
+    dx = ax - bx
+    dy = ay - by
 
     dx * dx + dy * dy
   end
 
-  def direction(%__MODULE__{} = a, %__MODULE__{} = b) do
-    dx = b.x - a.x
-    dy = b.y - a.y
+  def direction(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
+    dx = bx - ax
+    dy = by - ay
 
     mag =
       case :math.sqrt(dx * dx + dy * dy) do
@@ -192,11 +199,9 @@ defmodule FriGame.Vec2 do
     }
   end
 
-  def project(%__MODULE__{} = a, %__MODULE__{} = b) do
-    bx = b.x
-    by = b.y
-
-    dot_ab = a.x * bx + a.y * by
+  def project(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
+    dot_ab = ax * bx + ay * by
 
     squared_mag_b =
       case bx * bx + by * by do
@@ -212,42 +217,43 @@ defmodule FriGame.Vec2 do
     }
   end
 
-  def abs(%__MODULE__{} = a) do
+  def abs(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
     %__MODULE__{
-      x: Kernel.abs(a.x),
-      y: Kernel.abs(a.y)
+      x: Kernel.abs(ax),
+      y: Kernel.abs(ay)
     }
   end
 
-  def ceil(%__MODULE__{} = a) do
+  def ceil(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
     %__MODULE__{
-      x: Kernel.ceil(a.x),
-      y: Kernel.ceil(a.y)
+      x: Kernel.ceil(ax),
+      y: Kernel.ceil(ay)
     }
   end
 
-  def floor(%__MODULE__{} = a) do
+  def floor(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
     %__MODULE__{
-      x: Kernel.floor(a.x),
-      y: Kernel.floor(a.y)
+      x: Kernel.floor(ax),
+      y: Kernel.floor(ay)
     }
   end
 
-  def round(%__MODULE__{} = a) do
+  def round(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
     %__MODULE__{
-      x: Kernel.round(a.x),
-      y: Kernel.round(a.y)
+      x: Kernel.round(ax),
+      y: Kernel.round(ay)
     }
   end
 
-  def trunc(%__MODULE__{} = a) do
+  def trunc(%{x: ax, y: ay}) when is_number(ax) and is_number(ay) do
     %__MODULE__{
-      x: Kernel.trunc(a.x),
-      y: Kernel.trunc(a.y)
+      x: Kernel.trunc(ax),
+      y: Kernel.trunc(ay)
     }
   end
 
-  def equals(%__MODULE__{} = a, %__MODULE__{} = b) do
-    a.x == b.x and a.y == b.y
+  def equals(%{x: ax, y: ay}, %{x: bx, y: by})
+      when is_number(ax) and is_number(ay) and is_number(bx) and is_number(by) do
+    ax == bx and ay == by
   end
 end
