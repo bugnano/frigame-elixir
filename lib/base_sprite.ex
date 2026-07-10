@@ -16,11 +16,16 @@ defmodule FriGame.BaseSprite do
     field(:scalev, number(), default: 1)
   end
 
+  def transform_origin(%__MODULE__{transform_originx: transform_originx} = sprite)
+      when is_atom(transform_originx) do
+    apply(Rect, transform_originx, [sprite.rect])
+  end
+
   def transform_origin(%__MODULE__{} = sprite) do
     sprite.transform_originx
   end
 
-  def transform_origin(%__MODULE__{} = sprite, value) when is_atom(value) or is_number(value) do
+  def transform_origin(%__MODULE__{} = sprite, value) when is_number(value) do
     %__MODULE__{sprite | transform_originx: value, transform_originy: value}
   end
 
