@@ -111,7 +111,7 @@ defmodule FriGame.Rect do
   end
 
   def radius(%__MODULE__{} = rect) do
-    max(rect.width, rect.height) / 2.0
+    rect.width / 2.0
   end
 
   def radius(%__MODULE__{} = rect, value) when is_number(value) do
